@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+  xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  
+  <url>
+    <loc>/2015/09/30/trend-micro-ctf-asia-pacific--japan-2015-online-qualifier---offensive-200/</loc>
+    <lastmod>2015-09-30T22:22:46+01:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/2015/07/28/apks-filesystem-locations/</loc>
+    <lastmod>2015-07-28T23:15:56+01:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/2015/07/28/bytecode-viewer/</loc>
+    <lastmod>2015-07-28T21:40:50+01:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/2015/02/05/hacker-you-shall-not-pass/</loc>
+    <lastmod>2015-02-05T23:12:23+01:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/2015/01/08/good-for-enterprise-android-html-injection-cve-2014-4925/</loc>
+    <lastmod>2015-01-08T22:30:09+01:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/2014/11/04/mobile-insecurity/</loc>
+    <lastmod>2014-11-04T22:01:00+01:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/2014/09/22/outlook.com-android-app-html-injection/</loc>
+    <lastmod>2014-09-22T21:51:48+01:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/2014/09/20/cve-2014-1634-sql-injection-advanced-newsletter-magento-extension/</loc>
+    <lastmod>2014-09-20T21:00:00+01:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/2014/05/28/pentesting-android-applications/</loc>
+    <lastmod>2014-05-28T20:00:00+01:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/</loc>
+    <lastmod>2015-09-30T22:22:46+01:00</lastmod>
+    <priority>0</priority>
+    <xhtml:link
+                rel="alternate"
+                hreflang="sv"
+                href="/sv/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="/"
+                />
+  </url>
+  
+  <url>
+    <loc>/post/</loc>
+    <lastmod>2015-09-30T22:22:46+01:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>/tags/</loc>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>/topics/</loc>
+    <priority>0</priority>
+  </url>
+  
+</urlset>

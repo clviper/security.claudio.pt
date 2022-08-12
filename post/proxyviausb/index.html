@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+    <meta http-equiv="Content-Type" content="text/html" charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+
+    <title>Proxy Android App Communication via USB &middot; March Of The Bits</title>
+    <meta name="author" content="Cláudio André">
+    <meta name="description" content="My infosec posts.">
+    <meta name="generator" content="Hugo 0.25.1" />
+    <meta name="HandheldFriendly" content="True">
+    <meta name="MobileOptimized" content="320">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+
+    <!-- RSS autodiscovery -->
+    
+
+    <link rel="shortcut icon" href="https://security.claudio.pt/img/favicon.ico">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="https://security.claudio.pt/css/screen.css">
+    <link rel="stylesheet" href="https://security.claudio.pt/css/github.css">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.8.0/styles/default.min.css">
+    
+
+    
+    <link rel="shortcut icon" type="image/x-icon" href="https://security.claudio.pt/favicon.ico">
+    <link rel="icon" type="image/x-icon" href="https://security.claudio.pt/favicon.ico">
+    
+
+    <!-- Stylesheet for theme color -->
+    <style type="text/css">
+    a, a:visited {color: #f05948;}
+    .pagination a {color: #f05948;}
+    .gist .gist-file .gist-meta a:visited {color: #f05948 !important;}
+    a:focus, a:hover {color: #c62310;}
+    h1.post-title a:focus, h1.post-title a:hover, h1.blog-title a:focus, h1.blog-title a:hover {color: #c62310;}
+    .older-posts:hover, .newer-posts:hover {color: #c62310;}
+</style>
+</head>
+
+<body class="home-template">
+    <header id="site-head">
+	
+	<h1 class="blog-title"><a href="https://security.claudio.pt/">March Of The Bits</a></h1>
+	
+	
+	<h1 class="blog-subtitle">My infosec posts.</h1>
+	
+</header>
+    
+    
+    <main class="content" role="main">
+    
+<article class="post">
+    <header>
+        <h1 class="post-title">Proxy Android App Communication via USB</h1>
+        <div class="post-meta">
+            <time datetime="11 January 2018">
+                11 January 2018
+            </time>
+        </div>
+    </header>
+
+    <section class="post-content">
+        
+
+<p>Intructions to enable the access to the SSHd on a LineageOS:</p>
+
+<h2 id="1-mount-the-as-rw-android-device">1- Mount the / as rw (Android Device)</h2>
+
+<blockquote>
+<p>mount -o rw,remount,rw /</p>
+</blockquote>
+
+<h2 id="2-generate-a-keypair-that-will-allows-to-connect-via-ssh-android-device">2- Generate a keypair that will allows to connect via SSH: (Android Device)</h2>
+
+<blockquote>
+<p>/system/bin/ssh-keygen</p>
+</blockquote>
+
+<p>This will generate a keypair and save it in the defined location.</p>
+
+<h2 id="3-generate-host-keys-android-device">3- Generate host keys: (Android Device)</h2>
+
+<blockquote>
+<p>/system/bin/ssh-keygen -A</p>
+</blockquote>
+
+<h2 id="4-add-the-public-key-to-the-sshd-authorized-keys-android-device">4- Add the public key to the sshd authorized_keys (Android Device)</h2>
+
+<blockquote>
+<p>cat <previousSavedPath>/id_rsa.pub &gt;&gt; /data/ssh/authorized_keys</p>
+</blockquote>
+
+<h2 id="5-confirm-the-existence-of-sshd-config-in-data-ssh-sshd-config-or-create-a-new-one-with-the-following-settings-android-device">5- Confirm the existence of sshd_config in /data/ssh/sshd_config or create a new one with the following settings: (Android Device)</h2>
+
+<blockquote>
+<p>ListenAddress 127.0.0.1<br>
+  Protocol 2<br>
+  HostKey /data/ssh/ssh_host_rsa_key<br>
+  LoginGraceTime 2m<br>
+  PubkeyAuthentication yes<br>
+  AuthorizedKeysFile /data/ssh/authorized_keys<br>
+  PasswordAuthentication no<br>
+  AllowAgentForwarding yes<br>
+  AllowTcpForwarding yes<br>
+  GatewayPorts yes<br>
+  UsePrivilegeSeparation no<br></p>
+</blockquote>
+
+<h2 id="6-start-the-sshd-android-device">6- Start the SSHd (Android Device)</h2>
+
+<blockquote>
+<p>/system/bin/sshd &amp;</p>
+</blockquote>
+
+<h2 id="7-copy-the-private-key-to-your-device-to-use-for-connecting-to-sshd-host">7- Copy the private key to your device to use for connecting to SSHd (Host)</h2>
+
+<blockquote>
+<p>adb pull &lt;previousSavedPath&gt;/id_rsa device.priv</p>
+</blockquote>
+
+<h2 id="8-ajust-the-private-key-permissions-host">8- Ajust the private key permissions (Host)</h2>
+
+<blockquote>
+<p>chmod 600 device.priv</p>
+</blockquote>
+
+<h2 id="9-forward-the-ssh-port-to-the-localhost-and-connect-to-ssh-host">9- Forward the SSH port to the localhost and connect to SSH (Host)</h2>
+
+<blockquote>
+<p>adb forward tcp:2222 tcp:22
+ssh localhost -p 2222 -i device.priv</p>
+</blockquote>
+
+<p>With this setup now it&rsquo;s easy to use SSH remote port forwarding to redirect a local port in the device to the port where your proxy is running. (Assuming device is connected via USB the same machine where proxy is running)</p>
+
+<blockquote>
+<p>ssh 127.0.0.1 -p 2222 -i device.priv -R 8080:localhost:8080</p>
+</blockquote>
+
+<p>Now all you need to do is set the Android device proxy to 127.0.0.1:8080 and all the communication is passed via USB.</p>
+
+    </section>
+
+    
+    <section class="post-tags" style="padding-bottom:60px;">
+        <div class="post-meta tags">
+            <i class="fa fa-fw fa-tag"></i>
+            
+        </div>
+    </section>
+    
+    <div id="disqus_thread"></div>
+<script>
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "security-claudio-pt" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+    <section class="share">
+    <p class="backtotop"><a data-scroll href="#site-head"><i class="fa fa-lg fa-fw fa-angle-double-up"></i></a><a data-scroll class="backtotoptext" href="#site-head"> Back to top</a></p>
+    <p class="info prompt">Share</p>
+    <a href="http://twitter.com/share?text=Proxy%20Android%20App%20Communication%20via%20USB&url=https%3a%2f%2fsecurity.claudio.pt%2fpost%2fproxyviausb%2f" title="Share on Twitter"
+        onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+        <i class="fa fa-2x fa-fw fa-twitter-square"></i> <span class="hidden">Twitter</span>
+    </a>
+    <a href="https://www.facebook.com/sharer/sharer.php?u=https%3a%2f%2fsecurity.claudio.pt%2fpost%2fproxyviausb%2f" title="Share on Facebook"
+        onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+        <i class="fa fa-2x fa-fw fa-facebook-square" style="margin-left: -8px"></i> <span class="hidden">Facebook</span>
+    </a>
+    <a href="https://plus.google.com/share?url=https%3a%2f%2fsecurity.claudio.pt%2fpost%2fproxyviausb%2f" title="Share on Google+"
+       onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+        <i class="fa fa-2x fa-fw fa-google-plus-square" style="margin-left: -8px"></i> <span class="hidden">Google+</span>
+    </a>
+</section>
+
+    <footer class="post-footer">
+        <section class="author">
+    <div class="authorimage" style="background: url(https://security.claudio.pt/img/avatar.jpg)"></div>
+    <h4>Cláudio André</h4>
+    <p class="bio">Security Learner. Hobbyist Photographer.</p>
+    <p class="meta">
+      
+    </p>
+</section>
+    </footer>
+    
+</article>
+
+    </main>
+
+    <footer class="site-footer">
+	<div class="inner">
+		<section class="footer-social">
+      
+      <a href="//twitter.com/clviper" target="_blank" title="Twitter"><i class="fa fa-2x fa-fw fa-twitter"></i> <span class="hidden">Twitter</span></a>&nbsp;
+      
+      
+      
+      
+      
+      
+      <a href="//github.com/clviper" target="_blank" title="GitHub"><i class="fa fa-2x fa-fw fa-github"></i> <span class="hidden">GitHub</span></a>&nbsp;
+      
+      
+      
+      
+  </section>
+
+		<section class="copyright">&copy; 2018 <a href="https://security.claudio.pt/">Cláudio André</a>. </section>
+	</div>
+</footer>
+
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+<script src="https://security.claudio.pt/js/index.js"></script>
+<script src="https://security.claudio.pt/js/smooth-scroll.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.8.0/highlight.min.js"></script>
+
+
+<script>
+    smoothScroll.init({
+        speed: 800,
+        easing: 'easeInOutCubic',
+        updateURL: false,
+        offset: 125,
+    });
+</script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+
+<script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-65729916-1', 'auto');
+ga('send', 'pageview');
+</script>
+
+</body>
+</html>

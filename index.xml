@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>March Of The Bits</title>
+    <link>https://security.claudio.pt/</link>
+    <description>Recent content on March Of The Bits</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Tue, 15 May 2018 10:01:00 +0100</lastBuildDate>
+    
+	<atom:link href="https://security.claudio.pt/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Reviewing Android Webviews File Access Attack Vectors</title>
+      <link>https://security.claudio.pt/post/reviewwebviewfileaccess/</link>
+      <pubDate>Tue, 15 May 2018 10:01:00 +0100</pubDate>
+      
+      <guid>https://security.claudio.pt/post/reviewwebviewfileaccess/</guid>
+      <description>Introduction WebViews are a crucial part of many mobile applications and there are some security aspects that need to be taken into account when using them. File access is one of those aspects. For the implementation of some checks in our security tool Droidstatx, I&amp;rsquo;ve spent some time understanding all the details and noticed that not all attack vectors are very clear, specially in their requirements.
+WebView file access is enabled by default.</description>
+    </item>
+    
+    <item>
+      <title>droidstat-x, Android Applications Security Analyser, Xmind Generator.</title>
+      <link>https://security.claudio.pt/post/droidstatx/</link>
+      <pubDate>Thu, 01 Feb 2018 09:01:00 +0100</pubDate>
+      
+      <guid>https://security.claudio.pt/post/droidstatx/</guid>
+      <description>TL;DR  Python tool that generates an Xmind map with all the information gathered and any evidence of possible vulnerabilities identified via static analysis. The map itself is an Android Application Pentesting Methodology component, which assists Pentesters to cover all important areas during an assessment. This was the main goal driving the tool development. The tool also allows to add custom checks in a simple way, to confirm the existence of those patterns in the dalvik bytecode instructions.</description>
+    </item>
+    
+    <item>
+      <title>Proxy Android App Communication via USB</title>
+      <link>https://security.claudio.pt/post/proxyviausb/</link>
+      <pubDate>Thu, 11 Jan 2018 22:01:00 +0100</pubDate>
+      
+      <guid>https://security.claudio.pt/post/proxyviausb/</guid>
+      <description>Intructions to enable the access to the SSHd on a LineageOS:
+1- Mount the / as rw (Android Device)  mount -o rw,remount,rw /
+ 2- Generate a keypair that will allows to connect via SSH: (Android Device)  /system/bin/ssh-keygen
+ This will generate a keypair and save it in the defined location.
+3- Generate host keys: (Android Device)  /system/bin/ssh-keygen -A
+ 4- Add the public key to the sshd authorized_keys (Android Device)  cat /id_rsa.</description>
+    </item>
+    
+    <item>
+      <title>This is the secure droid you are looking for.</title>
+      <link>https://security.claudio.pt/post/pixelscamp/</link>
+      <pubDate>Fri, 07 Oct 2016 22:01:00 +0100</pubDate>
+      
+      <guid>https://security.claudio.pt/post/pixelscamp/</guid>
+      <description>This talk was done on Pixels Camp 2016 and aimed to show developers the best practices for secure development in the Android platform.
+We walked through the topics such as Networking, Storage, IPC, Unintended Data Leakage, among others. Also covered some of the new security features coming to developers on Android Nougat.
+  Here are the Android Projects I developed with the vulnerable code for each vulnerability:
+https://github.com/clviper/pixelscamp_talk_resources
+  This is the secure droid you are looking for  from Cláudio André</description>
+    </item>
+    
+    <item>
+      <title>Google 2016 CTF Mobile Challenges</title>
+      <link>https://security.claudio.pt/post/googlectf/</link>
+      <pubDate>Wed, 01 Jun 2016 22:01:00 +0100</pubDate>
+      
+      <guid>https://security.claudio.pt/post/googlectf/</guid>
+      <description>I presented in c0nfraria how I solved the three Android challenges in Google CTF 2016.
+   (Portuguese)</description>
+    </item>
+    
+    <item>
+      <title>Google AOSP Email App HTML Injection</title>
+      <link>https://security.claudio.pt/post/google-aosp-html-injection/</link>
+      <pubDate>Mon, 16 Nov 2015 17:09:02 +0200</pubDate>
+      
+      <guid>https://security.claudio.pt/post/google-aosp-html-injection/</guid>
+      <description>The Google AOSP Email App is vulnerable to HTML Injection on the email body. It allows a remote attacker to be able to send a crafted email with a payload that redirects the user to a target url as soon as he opens the email. This issue is not related with the email provider configured on the app but with the incorrect filter of potential dangerous tags on the client side.</description>
+    </item>
+    
+    <item>
+      <title>Trend Micro CTF Asia Pacific &amp; Japan 2015 Online Qualifier - Offensive 200</title>
+      <link>https://security.claudio.pt/post/trend_micro_ctf_2015/</link>
+      <pubDate>Wed, 30 Sep 2015 22:22:46 +0100</pubDate>
+      
+      <guid>https://security.claudio.pt/post/trend_micro_ctf_2015/</guid>
+      <description>This particular challenge was an Android Application. The VirusClicker Application.
+The application has a button that you have to click until you reach 10.000.000 clicks and then you should receive the flag.
+Looking at the decoded manifest, we could see that there are two activities and one broadcast receiver.
+Time to look into the decompiled source code. The code is obfuscated so the task of analyzing the code is a bit more difficult.</description>
+    </item>
+    
+    <item>
+      <title>APKS Filesystem Locations</title>
+      <link>https://security.claudio.pt/post/apks_location/</link>
+      <pubDate>Tue, 28 Jul 2015 23:15:56 +0100</pubDate>
+      
+      <guid>https://security.claudio.pt/post/apks_location/</guid>
+      <description>User installed applications apks are stored at /data/app/ but there are few more locations where other types of apks reside, such as vendor apks that come with the phone and system permissions apks.
+Those can be stored on the following locations:
+ /system/app/ /system/vendor/ /system/priv-app/ (system permission since 4.4)  </description>
+    </item>
+    
+    <item>
+      <title>Bytecode Viewer</title>
+      <link>https://security.claudio.pt/post/bytecode_viewer/</link>
+      <pubDate>Tue, 28 Jul 2015 21:40:50 +0100</pubDate>
+      
+      <guid>https://security.claudio.pt/post/bytecode_viewer/</guid>
+      <description>For those who don’t know, ByteCode Viewer is a awesome reverse engineering suite that its perfect for using on apk reverse engineering.
+It comes with support for 5 different decompilers:
+ Procyon CFR FernFlower Krakatau JD-GUI  In the GUI it allows to have up to 3 pane to compare side-by-side the different outcomes of the different decompilers:
+Since version 2.9.7, it comes with a command line interface, feature that I request to @konloch and he kindly implemented.</description>
+    </item>
+    
+    <item>
+      <title>Is my app secure?</title>
+      <link>https://security.claudio.pt/post/bsides2015/</link>
+      <pubDate>Sun, 05 Jul 2015 10:51:36 +0200</pubDate>
+      
+      <guid>https://security.claudio.pt/post/bsides2015/</guid>
+      <description>Presentation done on Bsides Lisbon 2015 alongside Herman Duarte.
+ Based on our experience on testing mobile applications, both on Android and iOS, we challenged ourselves on doing an assessment of both app stores&amp;rsquo; applications, using OWASP mobile top 10 as a reference in terms of vulnerabilities to search for. As a criteria for choosing the apps to test, we focused on the most common mobile applications available in the Portuguese Android and iOS app stores, from several categories such as finance, social media, medical and security.</description>
+    </item>
+    
+    <item>
+      <title>Hacker, You shall not pass!</title>
+      <link>https://security.claudio.pt/post/hacker_you_shall_not_pass/</link>
+      <pubDate>Thu, 05 Feb 2015 23:12:23 +0100</pubDate>
+      
+      <guid>https://security.claudio.pt/post/hacker_you_shall_not_pass/</guid>
+      <description>Slides for my presentation on Alphappl, where my objective was to give some tips to developers how to make their software more secure and info about resources where they can learn more about this subject.
+  Hacker, you shall not pass!  from Cláudio André</description>
+    </item>
+    
+    <item>
+      <title>Good For Enterprise Android HTML Injection (CVE-2014-4925)</title>
+      <link>https://security.claudio.pt/post/gfe_html_injection/</link>
+      <pubDate>Thu, 08 Jan 2015 22:30:09 +0100</pubDate>
+      
+      <guid>https://security.claudio.pt/post/gfe_html_injection/</guid>
+      <description>We had a request from a client to test a Mobile Device Management solution from Good Technology currently being implemented and its client application Good for Enterprise.
+ Good for Enterprise is built on Good next-gen containerization, which enables secure data sharing between Good-secured apps as well as app-level encryption independent of the device used. With next-gen containerization, Good for Enterprise protects corporate data including emails, business contacts, or files downloaded from corporate intranet on personal unmanaged and managed devices.</description>
+    </item>
+    
+    <item>
+      <title>Mobile (In)security?</title>
+      <link>https://security.claudio.pt/post/mobile_insecurity/</link>
+      <pubDate>Tue, 04 Nov 2014 22:01:00 +0100</pubDate>
+      
+      <guid>https://security.claudio.pt/post/mobile_insecurity/</guid>
+      <description>My slides for Mobile Edge event by Bold in Microsoft Portugal HQ where I talked a little bit of security on mobile platforms and common vulnerabilities on mobile applications.
+  Mobile (in)security ?  from Cláudio André</description>
+    </item>
+    
+    <item>
+      <title>Outlook.com Android App HTML Injection</title>
+      <link>https://security.claudio.pt/post/outlook.com_html_injection/</link>
+      <pubDate>Mon, 22 Sep 2014 21:51:48 +0100</pubDate>
+      
+      <guid>https://security.claudio.pt/post/outlook.com_html_injection/</guid>
+      <description>I like to analyse random apps on the Google Play Store and this time I dedicated time to the Outlook.com Android App.
+At the time, another guys were looking at the app as well and release this analysis about insecure data storage on the app.
+Most, if not all email apps allow HTML emails so I decided to play around a little bit with this.
+I wrote the following Python script to send emails via a Gmail account in HTML format: ``` import smtplib from email.</description>
+    </item>
+    
+    <item>
+      <title>CVE-2014-1634 Sql Injection Advanced Newsletter Magento Extension</title>
+      <link>https://security.claudio.pt/post/cve-2014-1634/</link>
+      <pubDate>Sat, 20 Sep 2014 21:00:00 +0100</pubDate>
+      
+      <guid>https://security.claudio.pt/post/cve-2014-1634/</guid>
+      <description>A remote unauthenticated attacker is able to execute arbitrary SQL commands via the the REST url parameter an_category_id in /advancednewsletter/index/subscribeajax/an_category_id/
+Vulnerable Versions
+Confirmed on version 2.3.4
+Solution
+Upgrade to version 2.3.5
+Vulnerability Timeline
+22 Jan 2014 – Vulnerability reported to vendor
+23 Jan 2014 – Vendor requested more details
+24 Jan 2014 – Vendor acknowledged vulnerability and released new version</description>
+    </item>
+    
+    <item>
+      <title>Pentesting Android Applications</title>
+      <link>https://security.claudio.pt/post/pentesting-android-applications/</link>
+      <pubDate>Wed, 28 May 2014 20:00:00 +0100</pubDate>
+      
+      <guid>https://security.claudio.pt/post/pentesting-android-applications/</guid>
+      <description>My slides for May 2014 Confraria de Segurança da Informação in Portugal, where I talked about the Pentest Environment Setup, Tools of the Trade, App Analysis and some security hints for Android developers.
+  Pentesting Android Applications  from Cláudio André</description>
+    </item>
+    
+  </channel>
+</rss>

@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+    <meta http-equiv="Content-Type" content="text/html" charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+
+    <title> &middot; Communication Breakdown</title>
+    <meta name="author" content="Cláudio André">
+    <meta name="description" content="My infosec posts.">
+    <meta name="generator" content="Hugo 0.25.1" />
+    <meta name="HandheldFriendly" content="True">
+    <meta name="MobileOptimized" content="320">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+
+    <!-- RSS autodiscovery -->
+    
+
+    <link rel="shortcut icon" href="http://security.claudio.pt/img/favicon.ico">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="http://security.claudio.pt/css/screen.css">
+    <link rel="stylesheet" href="http://security.claudio.pt/css/github.css">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.8.0/styles/default.min.css">
+    
+
+    
+    <link rel="shortcut icon" type="image/x-icon" href="http://security.claudio.pt/favicon.ico">
+    <link rel="icon" type="image/x-icon" href="http://security.claudio.pt/favicon.ico">
+    
+
+    <!-- Stylesheet for theme color -->
+    <style type="text/css">
+    a, a:visited {color: #3498db;}
+    .pagination a {color: #3498db;}
+    .gist .gist-file .gist-meta a:visited {color: #3498db !important;}
+    a:focus, a:hover {color: #2079b4;}
+    h1.post-title a:focus, h1.post-title a:hover, h1.blog-title a:focus, h1.blog-title a:hover {color: #2079b4;}
+    .older-posts:hover, .newer-posts:hover {color: #2079b4;}
+</style>
+</head>
+
+<body class="home-template">
+    <header id="site-head">
+	
+	<h1 class="blog-title"><a href="http://security.claudio.pt/">Communication Breakdown</a></h1>
+	
+	
+	<h1 class="blog-subtitle">My infosec posts.</h1>
+	
+</header>
+    
+    
+    <main class="content" role="main">
+    
+<article class="post">
+    <header>
+        <h1 class="post-title"></h1>
+        <div class="post-meta">
+            <time datetime="01 January 0001">
+                01 January 0001
+            </time>
+        </div>
+    </header>
+
+    <section class="post-content">
+        
+
+<h1 id="trend-micro-ctf-asia-pacific-japan-2015-online-qualifier-offensive-200">TREND MICRO CTF ASIA PACIFIC &amp; JAPAN 2015 ONLINE QUALIFIER – OFFENSIVE 200</h1>
+
+<p>This particular challenge was an Android Application. The VirusClicker Application.</p>
+
+<p>The application has a button that you have to click until you reach 10.000.000 clicks and then you should receive the flag.</p>
+
+<p>main imagem</p>
+
+<p>Looking at the decoded manifest, we could see that there are two activities and one broadcast receiver.</p>
+
+<p>manifest imagem</p>
+
+<p>Time to look into the decompiled source code. The code is obfuscated so the task of analyzing the code is a bit more difficult.</p>
+
+<p>The first stop was in the broadcast receiver code located in /com/tm/clicker/receiver/ScoreBroadcastReceiver.class.</p>
+
+<p>ScoreBroadcastReceiver.class imagem</p>
+
+<p>The receiver accepts a integer variable named “SCORE”. Based on that value, some characters are passed to a function on a.a.class.</p>
+
+<p>Looking at the class we can see that,that particular method is used to write the characters to a shared preference file MainPreferences in a field called DATA. This file is also used to register the current count of clicks.</p>
+
+<p>a.a.class imagem</p>
+
+<p>Looking at the c.class, that is the class responsible for the user interface where the actions for clicks are defined, we can see that is where the counter is incremented, the intent is sent for the broadcast receiver. Another interest part is that when the counter reaches 10.000.000 more characters are added to the files.</p>
+
+<p>c.class imagem</p>
+
+<p>Now looking at the activity that is going to show the flag.</p>
+
+<p>The activity is going to use a image file f.png to write the flag and present to the user. If you drill down a little bit you find that those characters are actually base64 that in the final process are going to be decoded. One thing that got my attention was that there is a protection in place on line 47, to close the activity if the counter in the file as not reached 10.000.000</p>
+
+<p>congraturations.class imagem</p>
+
+<p>So with this analysed we are certain that we need to reach 10.000.000 so that all the base64 values are appended.</p>
+
+<p>So my approach was:</p>
+
+<ul>
+<li>Patch the application in the /activity/c.class to change the condition ** 10000000 &lt;= this.g to 10000000 &gt;= this.g **</li>
+<li>Patch the application in the /activity/CongraturationsActivity.class to change the condition ** 10000000 != com.tm.ctf.clicker.a.a.c() to 10000000 == com.tm.ctf.clicker.a.a.c() **</li>
+</ul>
+
+<p>Using apktool to decompile and build the apk again I edited the two classes with the following smali:</p>
+
+<p>CongraturationsActivity.class:</p>
+
+<p>congraturations-smali imagem</p>
+
+<p>c.class:</p>
+
+<p>c-smali imagem</p>
+
+<p>With this taken care of we start the application and without clicking the button we use Drozer to the send the following score intents to the broadcast receiver:</p>
+
+<pre><code>run app.broadcast.send –action com.tm.ctf.clicker.SCORE –component com.tm.ctf.clicker com.tm.ctf.clicker.receiver.ScoreBroadcastReceiver –extra integer SCORE 3769
+
+run app.broadcast.send –action com.tm.ctf.clicker.SCORE –component com.tm.ctf.clicker com.tm.ctf.clicker.receiver.ScoreBroadcastReceiver –extra integer SCORE 10007
+
+run app.broadcast.send –action com.tm.ctf.clicker.SCORE –component com.tm.ctf.clicker com.tm.ctf.clicker.receiver.ScoreBroadcastReceiver –extra integer SCORE 59239
+
+run app.broadcast.send –action com.tm.ctf.clicker.SCORE –component com.tm.ctf.clicker com.tm.ctf.clicker.receiver.ScoreBroadcastReceiver –extra integer SCORE 100003
+
+run app.broadcast.send –action com.tm.ctf.clicker.SCORE –component com.tm.ctf.clicker com.tm.ctf.clicker.receiver.ScoreBroadcastReceiver –extra integer SCORE 495221
+
+run app.broadcast.send –action com.tm.ctf.clicker.SCORE –component com.tm.ctf.clicker com.tm.ctf.clicker.receiver.ScoreBroadcastReceiver –extra integer SCORE 1000003
+
+run app.broadcast.send –action com.tm.ctf.clicker.SCORE –component com.tm.ctf.clicker com.tm.ctf.clicker.receiver.ScoreBroadcastReceiver –extra integer SCORE 9999999
+</code></pre>
+
+<p>After sending all the intents, when you do the first click on the app you get the flag on the screen:</p>
+
+    </section>
+
+    
+    <section class="post-tags" style="padding-bottom:60px;">
+        <div class="post-meta tags">
+            <i class="fa fa-fw fa-tag"></i>
+            
+        </div>
+    </section>
+    
+    <div id="disqus_thread"></div>
+<script>
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "security-claudio-pt" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+    <section class="share">
+    <p class="backtotop"><a data-scroll href="#site-head"><i class="fa fa-lg fa-fw fa-angle-double-up"></i></a><a data-scroll class="backtotoptext" href="#site-head"> Back to top</a></p>
+    <p class="info prompt">Share</p>
+    <a href="http://twitter.com/share?text=&url=http%3a%2f%2fsecurity.claudio.pt%2fpost%2fblogpost-trendimicro%2f" title="Share on Twitter"
+        onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+        <i class="fa fa-2x fa-fw fa-twitter-square"></i> <span class="hidden">Twitter</span>
+    </a>
+    <a href="https://www.facebook.com/sharer/sharer.php?u=http%3a%2f%2fsecurity.claudio.pt%2fpost%2fblogpost-trendimicro%2f" title="Share on Facebook"
+        onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+        <i class="fa fa-2x fa-fw fa-facebook-square" style="margin-left: -8px"></i> <span class="hidden">Facebook</span>
+    </a>
+    <a href="https://plus.google.com/share?url=http%3a%2f%2fsecurity.claudio.pt%2fpost%2fblogpost-trendimicro%2f" title="Share on Google+"
+       onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+        <i class="fa fa-2x fa-fw fa-google-plus-square" style="margin-left: -8px"></i> <span class="hidden">Google+</span>
+    </a>
+</section>
+
+    <footer class="post-footer">
+        <section class="author">
+    <div class="authorimage" style="background: url(http://security.claudio.pt/img/avatar.jpg)"></div>
+    <h4>Cláudio André</h4>
+    <p class="bio">Security Learner. Hobbyist Photographer.</p>
+    <p class="meta">
+      
+    </p>
+</section>
+    </footer>
+    
+</article>
+
+    </main>
+
+    <footer class="site-footer">
+	<div class="inner">
+		<section class="footer-social">
+      
+      <a href="//twitter.com/clviper" target="_blank" title="Twitter"><i class="fa fa-2x fa-fw fa-twitter"></i> <span class="hidden">Twitter</span></a>&nbsp;
+      
+      
+      
+      
+      
+      
+      <a href="//github.com/clviper" target="_blank" title="GitHub"><i class="fa fa-2x fa-fw fa-github"></i> <span class="hidden">GitHub</span></a>&nbsp;
+      
+      
+      
+      
+  </section>
+
+		<section class="copyright">&copy; 2017 <a href="http://security.claudio.pt/">Cláudio André</a>. </section>
+	</div>
+</footer>
+
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+<script src="http://security.claudio.pt/js/index.js"></script>
+<script src="http://security.claudio.pt/js/smooth-scroll.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.8.0/highlight.min.js"></script>
+
+
+<script>
+    smoothScroll.init({
+        speed: 800,
+        easing: 'easeInOutCubic',
+        updateURL: false,
+        offset: 125,
+    });
+</script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+
+</body>
+</html>

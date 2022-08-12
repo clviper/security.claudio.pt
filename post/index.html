@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+    <meta http-equiv="Content-Type" content="text/html" charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+
+    <title>Posts &middot; March Of The Bits</title>
+    <meta name="author" content="Cláudio André">
+    <meta name="description" content="My infosec posts.">
+    <meta name="generator" content="Hugo 0.25.1" />
+    <meta name="HandheldFriendly" content="True">
+    <meta name="MobileOptimized" content="320">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+
+    <!-- RSS autodiscovery -->
+    
+    <link href="https://security.claudio.pt/post/index.xml" rel="alternate" type="application/rss+xml"
+    title="March Of The Bits" />
+    <link href="https://security.claudio.pt/post/index.xml" rel="feed" type="application/rss+xml"
+    title="March Of The Bits" />
+    
+
+    <link rel="shortcut icon" href="https://security.claudio.pt/img/favicon.ico">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="https://security.claudio.pt/css/screen.css">
+    <link rel="stylesheet" href="https://security.claudio.pt/css/github.css">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.8.0/styles/default.min.css">
+    
+
+    
+    <link rel="shortcut icon" type="image/x-icon" href="https://security.claudio.pt/favicon.ico">
+    <link rel="icon" type="image/x-icon" href="https://security.claudio.pt/favicon.ico">
+    
+
+    <!-- Stylesheet for theme color -->
+    <style type="text/css">
+    a, a:visited {color: #f05948;}
+    .pagination a {color: #f05948;}
+    .gist .gist-file .gist-meta a:visited {color: #f05948 !important;}
+    a:focus, a:hover {color: #c62310;}
+    h1.post-title a:focus, h1.post-title a:hover, h1.blog-title a:focus, h1.blog-title a:hover {color: #c62310;}
+    .older-posts:hover, .newer-posts:hover {color: #c62310;}
+</style>
+</head>
+
+<body class="home-template">
+    <header id="site-head">
+	
+	<h1 class="blog-title"><a href="https://security.claudio.pt/">March Of The Bits</a></h1>
+	
+	
+	<h1 class="blog-subtitle">My infosec posts.</h1>
+	
+</header>
+    
+    
+    <main class="content" role="main">
+    
+	
+    
+        <article class="preview">
+    <header>
+        <h1 class="post-title"><a href="https://security.claudio.pt/post/reviewwebviewfileaccess/">Reviewing Android Webviews File Access Attack Vectors</a></h1>
+        <div class="post-meta"><time datetime="15 May 2018">15 May 2018</time></div>
+    </header>
+    <section class="post-excerpt">
+        
+        <a class="excerptlink" href="https://security.claudio.pt/post/reviewwebviewfileaccess/"><p>Introduction WebViews are a crucial part of many mobile applications and there are some security aspects that need to be taken into account when using them. File access is one of those aspects. For the implementation of some checks in our security tool Droidstatx, I&rsquo;ve spent some time understanding all the details and noticed that not all attack vectors are very clear, specially in their requirements.
+WebView file access is enabled by default.&hellip;</p></a>
+        
+        <p class="readmore"><a href="https://security.claudio.pt/post/reviewwebviewfileaccess/">Keep reading <i class="fa fa-angle-double-right" style="padding-left: 5px;"></i></a></p>
+    </section>
+</article> 
+    
+        <article class="preview">
+    <header>
+        <h1 class="post-title"><a href="https://security.claudio.pt/post/droidstatx/">droidstat-x, Android Applications Security Analyser, Xmind Generator.</a></h1>
+        <div class="post-meta"><time datetime="01 February 2018">01 February 2018</time></div>
+    </header>
+    <section class="post-excerpt">
+        
+        <a class="excerptlink" href="https://security.claudio.pt/post/droidstatx/"><p>TL;DR  Python tool that generates an Xmind map with all the information gathered and any evidence of possible vulnerabilities identified via static analysis. The map itself is an Android Application Pentesting Methodology component, which assists Pentesters to cover all important areas during an assessment. This was the main goal driving the tool development. The tool also allows to add custom checks in a simple way, to confirm the existence of those patterns in the dalvik bytecode instructions.&hellip;</p></a>
+        
+        <p class="readmore"><a href="https://security.claudio.pt/post/droidstatx/">Keep reading <i class="fa fa-angle-double-right" style="padding-left: 5px;"></i></a></p>
+    </section>
+</article> 
+    
+        <article class="preview">
+    <header>
+        <h1 class="post-title"><a href="https://security.claudio.pt/post/proxyviausb/">Proxy Android App Communication via USB</a></h1>
+        <div class="post-meta"><time datetime="11 January 2018">11 January 2018</time></div>
+    </header>
+    <section class="post-excerpt">
+        
+        <a class="excerptlink" href="https://security.claudio.pt/post/proxyviausb/"><p>Intructions to enable the access to the SSHd on a LineageOS:
+1- Mount the / as rw (Android Device)  mount -o rw,remount,rw /
+ 2- Generate a keypair that will allows to connect via SSH: (Android Device)  /system/bin/ssh-keygen
+ This will generate a keypair and save it in the defined location.
+3- Generate host keys: (Android Device)  /system/bin/ssh-keygen -A
+ 4- Add the public key to the sshd authorized_keys (Android Device)  cat /id_rsa.&hellip;</p></a>
+        
+        <p class="readmore"><a href="https://security.claudio.pt/post/proxyviausb/">Keep reading <i class="fa fa-angle-double-right" style="padding-left: 5px;"></i></a></p>
+    </section>
+</article> 
+    
+        <article class="preview">
+    <header>
+        <h1 class="post-title"><a href="https://security.claudio.pt/post/pixelscamp/">This is the secure droid you are looking for.</a></h1>
+        <div class="post-meta"><time datetime="07 October 2016">07 October 2016</time></div>
+    </header>
+    <section class="post-excerpt">
+        
+        <a class="excerptlink" href="https://security.claudio.pt/post/pixelscamp/"><p>This talk was done on Pixels Camp 2016 and aimed to show developers the best practices for secure development in the Android platform.
+We walked through the topics such as Networking, Storage, IPC, Unintended Data Leakage, among others. Also covered some of the new security features coming to developers on Android Nougat.
+  Here are the Android Projects I developed with the vulnerable code for each vulnerability:
+https://github.com/clviper/pixelscamp_talk_resources
+  This is the secure droid you are looking for  from Cláudio André&hellip;</p></a>
+        
+        <p class="readmore"><a href="https://security.claudio.pt/post/pixelscamp/">Keep reading <i class="fa fa-angle-double-right" style="padding-left: 5px;"></i></a></p>
+    </section>
+</article> 
+    
+        <article class="preview">
+    <header>
+        <h1 class="post-title"><a href="https://security.claudio.pt/post/googlectf/">Google 2016 CTF Mobile Challenges</a></h1>
+        <div class="post-meta"><time datetime="01 June 2016">01 June 2016</time></div>
+    </header>
+    <section class="post-excerpt">
+        
+        <a class="excerptlink" href="https://security.claudio.pt/post/googlectf/"><p>I presented in c0nfraria how I solved the three Android challenges in Google CTF 2016.
+   (Portuguese)&hellip;</p></a>
+        
+        <p class="readmore"><a href="https://security.claudio.pt/post/googlectf/">Keep reading <i class="fa fa-angle-double-right" style="padding-left: 5px;"></i></a></p>
+    </section>
+</article> 
+    
+        <article class="preview">
+    <header>
+        <h1 class="post-title"><a href="https://security.claudio.pt/post/google-aosp-html-injection/">Google AOSP Email App HTML Injection</a></h1>
+        <div class="post-meta"><time datetime="16 November 2015">16 November 2015</time></div>
+    </header>
+    <section class="post-excerpt">
+        
+        <a class="excerptlink" href="https://security.claudio.pt/post/google-aosp-html-injection/"><p>The Google AOSP Email App is vulnerable to HTML Injection on the email body. It allows a remote attacker to be able to send a crafted email with a payload that redirects the user to a target url as soon as he opens the email. This issue is not related with the email provider configured on the app but with the incorrect filter of potential dangerous tags on the client side.&hellip;</p></a>
+        
+        <p class="readmore"><a href="https://security.claudio.pt/post/google-aosp-html-injection/">Keep reading <i class="fa fa-angle-double-right" style="padding-left: 5px;"></i></a></p>
+    </section>
+</article> 
+    
+        <article class="preview">
+    <header>
+        <h1 class="post-title"><a href="https://security.claudio.pt/post/trend_micro_ctf_2015/">Trend Micro CTF Asia Pacific &amp; Japan 2015 Online Qualifier - Offensive 200</a></h1>
+        <div class="post-meta"><time datetime="30 September 2015">30 September 2015</time></div>
+    </header>
+    <section class="post-excerpt">
+        
+        <a class="excerptlink" href="https://security.claudio.pt/post/trend_micro_ctf_2015/"><p>This particular challenge was an Android Application. The VirusClicker Application.
+The application has a button that you have to click until you reach 10.000.000 clicks and then you should receive the flag.
+Looking at the decoded manifest, we could see that there are two activities and one broadcast receiver.
+Time to look into the decompiled source code. The code is obfuscated so the task of analyzing the code is a bit more difficult.&hellip;</p></a>
+        
+        <p class="readmore"><a href="https://security.claudio.pt/post/trend_micro_ctf_2015/">Keep reading <i class="fa fa-angle-double-right" style="padding-left: 5px;"></i></a></p>
+    </section>
+</article> 
+    
+        <article class="preview">
+    <header>
+        <h1 class="post-title"><a href="https://security.claudio.pt/post/apks_location/">APKS Filesystem Locations</a></h1>
+        <div class="post-meta"><time datetime="28 July 2015">28 July 2015</time></div>
+    </header>
+    <section class="post-excerpt">
+        
+        <a class="excerptlink" href="https://security.claudio.pt/post/apks_location/"><p>User installed applications apks are stored at /data/app/ but there are few more locations where other types of apks reside, such as vendor apks that come with the phone and system permissions apks.
+Those can be stored on the following locations:
+ /system/app/ /system/vendor/ /system/priv-app/ (system permission since 4.4)  &hellip;</p></a>
+        
+        <p class="readmore"><a href="https://security.claudio.pt/post/apks_location/">Keep reading <i class="fa fa-angle-double-right" style="padding-left: 5px;"></i></a></p>
+    </section>
+</article> 
+    
+        <article class="preview">
+    <header>
+        <h1 class="post-title"><a href="https://security.claudio.pt/post/bytecode_viewer/">Bytecode Viewer</a></h1>
+        <div class="post-meta"><time datetime="28 July 2015">28 July 2015</time></div>
+    </header>
+    <section class="post-excerpt">
+        
+        <a class="excerptlink" href="https://security.claudio.pt/post/bytecode_viewer/"><p>For those who don’t know, ByteCode Viewer is a awesome reverse engineering suite that its perfect for using on apk reverse engineering.
+It comes with support for 5 different decompilers:
+ Procyon CFR FernFlower Krakatau JD-GUI  In the GUI it allows to have up to 3 pane to compare side-by-side the different outcomes of the different decompilers:
+Since version 2.9.7, it comes with a command line interface, feature that I request to @konloch and he kindly implemented.&hellip;</p></a>
+        
+        <p class="readmore"><a href="https://security.claudio.pt/post/bytecode_viewer/">Keep reading <i class="fa fa-angle-double-right" style="padding-left: 5px;"></i></a></p>
+    </section>
+</article> 
+    
+        <article class="preview">
+    <header>
+        <h1 class="post-title"><a href="https://security.claudio.pt/post/bsides2015/">Is my app secure?</a></h1>
+        <div class="post-meta"><time datetime="05 July 2015">05 July 2015</time></div>
+    </header>
+    <section class="post-excerpt">
+        
+        <a class="excerptlink" href="https://security.claudio.pt/post/bsides2015/"><p>Presentation done on Bsides Lisbon 2015 alongside Herman Duarte.
+ Based on our experience on testing mobile applications, both on Android and iOS, we challenged ourselves on doing an assessment of both app stores&rsquo; applications, using OWASP mobile top 10 as a reference in terms of vulnerabilities to search for. As a criteria for choosing the apps to test, we focused on the most common mobile applications available in the Portuguese Android and iOS app stores, from several categories such as finance, social media, medical and security.&hellip;</p></a>
+        
+        <p class="readmore"><a href="https://security.claudio.pt/post/bsides2015/">Keep reading <i class="fa fa-angle-double-right" style="padding-left: 5px;"></i></a></p>
+    </section>
+</article> 
+    
+    
+<nav class="pagination" role="pagination">
+    
+
+    <span class="page-number">Page 1 of 2</span>
+    
+    
+    <a class="older-posts" href="/post/page/2/">Older <i class="fa fa-chevron-circle-right"></i></a>
+    
+</nav>
+
+
+    </main>
+
+    <footer class="site-footer">
+	<div class="inner">
+		<section class="footer-social">
+      
+      <a href="//twitter.com/clviper" target="_blank" title="Twitter"><i class="fa fa-2x fa-fw fa-twitter"></i> <span class="hidden">Twitter</span></a>&nbsp;
+      
+      
+      
+      
+      
+      
+      <a href="//github.com/clviper" target="_blank" title="GitHub"><i class="fa fa-2x fa-fw fa-github"></i> <span class="hidden">GitHub</span></a>&nbsp;
+      
+      
+      
+      
+      <a href="https://security.claudio.pt/post/index.xml" target="_blank" title="RSS"><i class="fa fa-2x fa-fw fa-rss"></i> <span class="hidden">RSS</span></a>
+      
+  </section>
+
+		<section class="copyright">&copy; 2018 <a href="https://security.claudio.pt/">Cláudio André</a>. </section>
+	</div>
+</footer>
+
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+<script src="https://security.claudio.pt/js/index.js"></script>
+<script src="https://security.claudio.pt/js/smooth-scroll.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.8.0/highlight.min.js"></script>
+
+
+<script>
+    smoothScroll.init({
+        speed: 800,
+        easing: 'easeInOutCubic',
+        updateURL: false,
+        offset: 125,
+    });
+</script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+
+<script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-65729916-1', 'auto');
+ga('send', 'pageview');
+</script>
+
+</body>
+</html>

@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+<meta property="og:title" content="Trend Micro CTF Asia Pacific &amp; Japan 2015 Online Qualifier - Offensive 200" />
+<meta property="og:description" content="This particular challenge was an Android Application. The VirusClicker Application.
+The application has a button that you have to click until you reach 10.000.000 clicks and then you should receive the flag.
+main
+Looking at the decoded manifest, we could see that there are two activities and one broadcast receiver.
+manifest
+Time to look into the decompiled source code. The code is obfuscated so the task of analyzing the code is a bit more difficult." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://security.claudio.pt/2015/09/trend-micro-ctf-asia-pacific--japan-2015-online-qualifier---offensive-200/" />
+
+
+
+<meta property="article:published_time" content="2015-09-30T22:22:46&#43;01:00"/>
+<meta property="article:modified_time" content="2015-09-30T22:22:46&#43;01:00"/>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <meta name="twitter:card" content="summary"/>
+
+
+
+<meta name="twitter:text:title" content="Trend Micro CTF Asia Pacific &amp; Japan 2015 Online Qualifier - Offensive 200"/>
+<meta name="twitter:title" content="Trend Micro CTF Asia Pacific &amp; Japan 2015 Online Qualifier - Offensive 200"/>
+<meta name="twitter:description" content="This particular challenge was an Android Application. The VirusClicker Application.
+The application has a button that you have to click until you reach 10.000.000 clicks and then you should receive the flag.
+main
+Looking at the decoded manifest, we could see that there are two activities and one broadcast receiver.
+manifest
+Time to look into the decompiled source code. The code is obfuscated so the task of analyzing the code is a bit more difficult."/>
+<meta name="twitter:site" content="@clviper"/>
+<meta name="generator" content="Hugo 0.25.1" />
+
+
+    
+<script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Trend Micro CTF Asia Pacific &amp; Japan 2015 Online Qualifier - Offensive 200",
+  "url": "http://security.claudio.pt/2015/09/trend-micro-ctf-asia-pacific--japan-2015-online-qualifier---offensive-200/",
+  "wordCount": "500",
+  "datePublished": "2015-09-30T22:22:46&#43;01:00",
+  "dateModified": "2015-09-30T22:22:46&#43;01:00",
+  "author": {
+    "@type": "Person",
+    "name": "Cláudio André"
+  }
+}
+</script>
+
+
+
+    <link rel="canonical" href="http://security.claudio.pt/2015/09/trend-micro-ctf-asia-pacific--japan-2015-online-qualifier---offensive-200/">
+
+    <title>Trend Micro CTF Asia Pacific &amp; Japan 2015 Online Qualifier - Offensive 200 | Communication Breakdown.</title>
+
+    <!-- combined, minified CSS -->
+    <link href="http://security.claudio.pt/css/style.css" rel="stylesheet" integrity="sha384-j3n8sYdzztDYtVc80KiiuOXoCg5Bjz0zYyLGzDMW8RbfA0u5djbF0GO3bVOPoLyN" crossorigin="anonymous">
+
+    
+
+    
+
+    
+
+    
+
+  </head>
+
+  <body>
+
+    <div class="blog-masthead">
+      <div class="container">
+        <nav class="nav blog-nav">
+          <a class="nav-link " href="http://security.claudio.pt/">Home</a>
+          
+          
+        </nav>
+      </div>
+    </div>
+
+    <header class="blog-header">
+      <div class="container">
+        <h1 class="blog-title"><a href="http://security.claudio.pt/" rel="home">Communication Breakdown.</a></h1>
+        <p class="lead blog-description">My infosec posts.</p>
+      </div>
+    </header>
+
+    <div class="container">
+      <div class="row">
+        <div class="col-sm-8 blog-main">
+
+          
+
+
+<article class="blog-post">
+  <header>
+    <h2 class="blog-post-title"><a href="http://security.claudio.pt/2015/09/trend-micro-ctf-asia-pacific--japan-2015-online-qualifier---offensive-200/">Trend Micro CTF Asia Pacific &amp; Japan 2015 Online Qualifier - Offensive 200</a></h2>
+    <p class="blog-post-meta"><time datetime="2015-09-30T22:22:46&#43;01:00">Wed Sep 30, 2015</time> by Cláudio André</p>
+  </header>
+  <p>This particular challenge was an Android Application. The VirusClicker Application.</p>
+
+<p>The application has a button that you have to click until you reach 10.000.000 clicks and then you should receive the flag.</p>
+
+<p>main</p>
+
+<p>Looking at the decoded manifest, we could see that there are two activities and one broadcast receiver.</p>
+
+<p>manifest</p>
+
+<p>Time to look into the decompiled source code. The code is obfuscated so the task of analyzing the code is a bit more difficult.</p>
+
+<p>The first stop was in the broadcast receiver code located in /com/tm/clicker/receiver/ScoreBroadcastReceiver.class.</p>
+
+<p>ScoreBroadcastReceiver.class</p>
+
+<p>The receiver accepts a integer variable named “SCORE”. Based on that value, some characters are passed to a function on a.a.class.</p>
+
+<p>Looking at the class we can see that,that particular method is used to write the characters to a shared preference file MainPreferences in a field called DATA. This file is also used to register the current count of clicks.</p>
+
+<p>a.a.class</p>
+
+<p>Looking at the c.class, that is the class responsible for the user interface where the actions for clicks are defined, we can see that is where the counter is incremented, the intent is sent for the broadcast receiver. Another interest part is that when the counter reaches 10.000.000 more characters are added to the files.</p>
+
+<p>c.class</p>
+
+<p>Now looking at the activity that is going to show the flag.</p>
+
+<p>The activity is going to use a image file f.png to write the flag and present to the user. If you drill down a little bit you find that those characters are actually base64 that in the final process are going to be decoded. One thing that got my attention was that there is a protection in place on line 47, to close the activity if the counter in the file as not reached 10.000.000</p>
+
+<p>congraturations.class</p>
+
+<p>So with this analysed we are certain that we need to reach 10.000.000 so that all the base64 values are appended.</p>
+
+<p>So my approach was:</p>
+
+<pre><code>Patch the application in the /activity/c.class to change the condition 10000000 &lt;= this.g to 10000000 &gt;= this.g
+Path the application in the /activity/CongraturationsActivity.class to change the condition 10000000 != com.tm.ctf.clicker.a.a.c() toÂ 10000000 == com.tm.ctf.clicker.a.a.c()
+</code></pre>
+
+<p>Using apktool to decompile and build the apk again I edited the two classes with the following smali:</p>
+
+<p>CongraturationsActivity.class:</p>
+
+<p>congraturations-smali</p>
+
+<p>c.class:</p>
+
+<p>c-smali</p>
+
+<p>With this taken care of we start the application and without clicking the button we use Drozer to the send the following score intents to the broadcast receiver:</p>
+
+<pre><code>run app.broadcast.send –action com.tm.ctf.clicker.SCORE –component com.tm.ctf.clicker com.tm.ctf.clicker.receiver.ScoreBroadcastReceiver –extra integer SCORE 3769
+
+run app.broadcast.send –action com.tm.ctf.clicker.SCORE –component com.tm.ctf.clicker com.tm.ctf.clicker.receiver.ScoreBroadcastReceiver –extra integer SCORE 10007
+
+run app.broadcast.send –action com.tm.ctf.clicker.SCORE –component com.tm.ctf.clicker com.tm.ctf.clicker.receiver.ScoreBroadcastReceiver –extra integer SCORE 59239
+
+run app.broadcast.send –action com.tm.ctf.clicker.SCORE –component com.tm.ctf.clicker com.tm.ctf.clicker.receiver.ScoreBroadcastReceiver –extra integer SCORE 100003
+
+run app.broadcast.send –action com.tm.ctf.clicker.SCORE –component com.tm.ctf.clicker com.tm.ctf.clicker.receiver.ScoreBroadcastReceiver –extra integer SCORE 495221
+
+run app.broadcast.send –action com.tm.ctf.clicker.SCORE –component com.tm.ctf.clicker com.tm.ctf.clicker.receiver.ScoreBroadcastReceiver –extra integer SCORE 1000003
+
+run app.broadcast.send –action com.tm.ctf.clicker.SCORE –component com.tm.ctf.clicker com.tm.ctf.clicker.receiver.ScoreBroadcastReceiver –extra integer SCORE 9999999
+</code></pre>
+
+<p>After sending all the intents, when you do the first click on the app you get the flag on the screen:</p>
+
+
+  
+
+  
+  <hr>
+  <footer>
+
+  
+    <section>
+    <h4>Share</h4>
+    <nav class="nav sharing-icons">
+      <a class="nav-item" href="https://www.facebook.com/sharer/sharer.php?u=http%3a%2f%2fsecurity.claudio.pt%2f2015%2f09%2ftrend-micro-ctf-asia-pacific--japan-2015-online-qualifier---offensive-200%2f" title="Share on Facebook"><span class="fa fa-facebook fa-2x" aria-hidden="true"></span></a>
+      <a class="nav-item" href="https://plus.google.com/share?url=http%3a%2f%2fsecurity.claudio.pt%2f2015%2f09%2ftrend-micro-ctf-asia-pacific--japan-2015-online-qualifier---offensive-200%2f" title="Share on Google+"><span class="fa fa-google-plus fa-2x" aria-hidden="true"></span></a>
+      <a class="nav-item" href="https://www.linkedin.com/shareArticle?mini=true&amp;url=http%3a%2f%2fsecurity.claudio.pt%2f2015%2f09%2ftrend-micro-ctf-asia-pacific--japan-2015-online-qualifier---offensive-200%2f" title="Share on LinkedIn"><span class="fa fa-linkedin fa-2x" aria-hidden="true"></span></a>
+      <a class="nav-item" href="https://twitter.com/home?status=http%3a%2f%2fsecurity.claudio.pt%2f2015%2f09%2ftrend-micro-ctf-asia-pacific--japan-2015-online-qualifier---offensive-200%2f" title="Tweet this"><span class="fa fa-twitter fa-2x"></span></a>
+    </nav>
+  </section>
+
+  
+
+  
+  </footer>
+  
+
+</article> 
+
+
+
+        </div> <!-- /.blog-main -->
+
+        <aside class="col-sm-3 offset-sm-1 blog-sidebar">
+  
+
+  
+
+  
+</aside>
+
+
+      </div> <!-- /.row -->
+    </div> <!-- /.container -->
+
+    <footer class="blog-footer">
+      <p>
+      
+      Blog template created by <a href="https://twitter.com/mdo">@mdo</a>, ported to Hugo by <a href='https://twitter.com/mralanorth'>@mralanorth</a>.
+      
+      </p>
+      <p>
+      <a href="#">Back to top</a>
+      </p>
+    </footer>
+
+  </body>
+
+</html>

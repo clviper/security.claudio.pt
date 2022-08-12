@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+<meta property="og:title" content="Bytecode Viewer" />
+<meta property="og:description" content="For those who don’t know, ByteCode Viewer is a awesome reverse engineering suite that its perfect for using on apk reverse engineering.
+It comes with support for 5 different decompilers:
+ Procyon CFR FernFlower Krakatau JD-GUI  In the GUI it allows to have up to 3 pane to compare side-by-side the different outcomes of the different decompilers:
+Since version 2.9.7, it comes with a command line interface, feature that I request to @konloch and he kindly implemented." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://security.claudio.pt/2015/07/bytecode-viewer/" />
+
+
+
+<meta property="article:published_time" content="2015-07-28T21:40:50&#43;01:00"/>
+<meta property="article:modified_time" content="2015-07-28T21:40:50&#43;01:00"/>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <meta name="twitter:card" content="summary"/>
+
+
+
+<meta name="twitter:text:title" content="Bytecode Viewer"/>
+<meta name="twitter:title" content="Bytecode Viewer"/>
+<meta name="twitter:description" content="For those who don’t know, ByteCode Viewer is a awesome reverse engineering suite that its perfect for using on apk reverse engineering.
+It comes with support for 5 different decompilers:
+ Procyon CFR FernFlower Krakatau JD-GUI  In the GUI it allows to have up to 3 pane to compare side-by-side the different outcomes of the different decompilers:
+Since version 2.9.7, it comes with a command line interface, feature that I request to @konloch and he kindly implemented."/>
+<meta name="twitter:site" content="@clviper"/>
+<meta name="generator" content="Hugo 0.25.1" />
+
+
+    
+<script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Bytecode Viewer",
+  "url": "http://security.claudio.pt/2015/07/bytecode-viewer/",
+  "wordCount": "148",
+  "datePublished": "2015-07-28T21:40:50&#43;01:00",
+  "dateModified": "2015-07-28T21:40:50&#43;01:00",
+  "author": {
+    "@type": "Person",
+    "name": "Cláudio André"
+  }
+}
+</script>
+
+
+
+    <link rel="canonical" href="http://security.claudio.pt/2015/07/bytecode-viewer/">
+
+    <title>Bytecode Viewer | Communication Breakdown.</title>
+
+    <!-- combined, minified CSS -->
+    <link href="http://security.claudio.pt/css/style.css" rel="stylesheet" integrity="sha384-j3n8sYdzztDYtVc80KiiuOXoCg5Bjz0zYyLGzDMW8RbfA0u5djbF0GO3bVOPoLyN" crossorigin="anonymous">
+
+    
+
+    
+
+    
+
+    
+
+  </head>
+
+  <body>
+
+    <div class="blog-masthead">
+      <div class="container">
+        <nav class="nav blog-nav">
+          <a class="nav-link " href="http://security.claudio.pt/">Home</a>
+          
+          
+        </nav>
+      </div>
+    </div>
+
+    <header class="blog-header">
+      <div class="container">
+        <h1 class="blog-title"><a href="http://security.claudio.pt/" rel="home">Communication Breakdown.</a></h1>
+        <p class="lead blog-description">My infosec posts.</p>
+      </div>
+    </header>
+
+    <div class="container">
+      <div class="row">
+        <div class="col-sm-8 blog-main">
+
+          
+
+
+<article class="blog-post">
+  <header>
+    <h2 class="blog-post-title"><a href="http://security.claudio.pt/2015/07/bytecode-viewer/">Bytecode Viewer</a></h2>
+    <p class="blog-post-meta"><time datetime="2015-07-28T21:40:50&#43;01:00">Tue Jul 28, 2015</time> by Cláudio André</p>
+  </header>
+  <p>For those who don’t know, ByteCode Viewer is a awesome reverse engineering suite that its perfect for using on apk reverse engineering.</p>
+
+<p>It comes with support for 5 different decompilers:</p>
+
+<ul>
+<li>Procyon</li>
+<li>CFR</li>
+<li>FernFlower</li>
+<li>Krakatau</li>
+<li>JD-GUI</li>
+</ul>
+
+<p>In the GUI it allows to have up to 3 pane to compare side-by-side the different outcomes of the different decompilers:</p>
+
+<p><img src="/img/bytecodeviewer.jpg" alt="alternate text" /></p>
+
+<p>Since version 2.9.7, it comes with a command line interface, feature that I request to @konloch and he kindly implemented. Now is possible to decompile apks with multiple decompilers from command line. This is very useful when we want to script this process.</p>
+
+<p>Another cool feature is the Decode APK Resources (Settings -&gt; Decode APK Resources). This decodes all the resources like activities layouts xml, android manifest xml and other resources. A folder named Decoded Resources will be created in the root structure of the workspace.</p>
+
+<p>You can get it at <a href="https://github.com/Konloch/bytecode-viewer">https://github.com/Konloch/bytecode-viewer</a>.</p>
+
+
+  
+
+  
+  <hr>
+  <footer>
+
+  
+    <section>
+    <h4>Share</h4>
+    <nav class="nav sharing-icons">
+      <a class="nav-item" href="https://www.facebook.com/sharer/sharer.php?u=http%3a%2f%2fsecurity.claudio.pt%2f2015%2f07%2fbytecode-viewer%2f" title="Share on Facebook"><span class="fa fa-facebook fa-2x" aria-hidden="true"></span></a>
+      <a class="nav-item" href="https://plus.google.com/share?url=http%3a%2f%2fsecurity.claudio.pt%2f2015%2f07%2fbytecode-viewer%2f" title="Share on Google+"><span class="fa fa-google-plus fa-2x" aria-hidden="true"></span></a>
+      <a class="nav-item" href="https://www.linkedin.com/shareArticle?mini=true&amp;url=http%3a%2f%2fsecurity.claudio.pt%2f2015%2f07%2fbytecode-viewer%2f" title="Share on LinkedIn"><span class="fa fa-linkedin fa-2x" aria-hidden="true"></span></a>
+      <a class="nav-item" href="https://twitter.com/home?status=http%3a%2f%2fsecurity.claudio.pt%2f2015%2f07%2fbytecode-viewer%2f" title="Tweet this"><span class="fa fa-twitter fa-2x"></span></a>
+    </nav>
+  </section>
+
+  
+
+  
+  </footer>
+  
+
+</article> 
+
+
+
+        </div> <!-- /.blog-main -->
+
+        <aside class="col-sm-3 offset-sm-1 blog-sidebar">
+  
+
+  
+
+  
+</aside>
+
+
+      </div> <!-- /.row -->
+    </div> <!-- /.container -->
+
+    <footer class="blog-footer">
+      <p>
+      
+      Blog template created by <a href="https://twitter.com/mdo">@mdo</a>, ported to Hugo by <a href='https://twitter.com/mralanorth'>@mralanorth</a>.
+      
+      </p>
+      <p>
+      <a href="#">Back to top</a>
+      </p>
+    </footer>
+
+  </body>
+
+</html>
